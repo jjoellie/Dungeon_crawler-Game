@@ -19,4 +19,49 @@ void connect_rooms(Room* a, Room* b) {
         b->neighbors[b->num_neighbors++] = a;
     }
 }
- 
+
+typedef struct Monster {
+    int hp;
+    int damage;
+} Monster;
+
+typedef struct Room {
+    int id;
+    int numConnections;
+    struct Room** connections;
+    Monster* monster;  // NULL als er geen monster is
+} Room;
+
+typedef struct Player {
+    int currentRoomId;
+    int hp;
+    int damage;
+} Player;
+void fight(Player* player, Room* room) {
+    if (room->monster == NULL) {
+        printf("Er is geen monster in deze kamer.\n");
+        return;
+    }
+
+    printf("Gevecht gestart!\n");
+
+    // Speler en monster vallen elkaar aan
+    room->monster->hp -= player->damage;
+    player->hp -= room->monster->damage;
+
+    printf("Speler HP: %d\n", player->hp);
+    printf("Monster HP: %d\n", room->monster->hp);
+
+    // Check of iemand dood is
+    if (room->monster->hp <= 0) {
+        printf("Monster is verslagen!\n");
+        free(room->monster);
+        room->monster = NULL;
+    }
+
+    if (player->hp <= 0) {
+        printf("Speler is verslagen!\n");
+        // Hier zou je kunnen afsluiten of andere game over logica doen
+    }
+}
+
